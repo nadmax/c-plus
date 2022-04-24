@@ -1,6 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <string.h>
+#include "raise.h"
+
 typedef void Object;
 typedef void (*ctor)(Object*, va_list*);
 typedef void (*dtor)(Object*);
@@ -19,11 +22,18 @@ typedef struct Class_s
     binary_op __sub__;
     binary_op __mul__;
     binary_op __div__;
+    binary_compare_op __eq__;
     binary_compare_op __lt__;
     binary_compare_op __gt__;
-    binary_compare_op __eq__;
 } Class;
 
-#define str(obj) (((Class*)obj)->__str__(obj))
+#define str(obj)    (((Class *)obj)->__str__ != NULL ? ((Class *)obj)->__str__(obj) : strdup(((Class *)obj)->__name__))
+#define add(a, b)   ((Class *)a)->__add__(a, b)
+# define sub(a, b)  ((Class *)a)->__sub__(a, b)
+# define mul(a, b)  ((Class *)a)->__mul__(a, b)
+# define div(a, b)  ((Class *)a)->__div__(a, b)
+# define eq(a, b)   ((Class *)a)->__eq__(a, b)
+# define gt(a, b)   ((Class *)a)->__gt__(a, b)
+# define lt(a, b)   ((Class *)a)->__lt__(a, b)
 
 #endif

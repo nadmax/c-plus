@@ -1,6 +1,6 @@
 #include "new.h"
 
-void delele(Object* obj)
+void delete(Object* obj)
 {
     Class* class = (Class*)obj;
 
