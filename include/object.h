@@ -1,6 +1,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <sys/types.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #include <string.h>
 #include "raise.h"
 

@@ -5,29 +5,29 @@ void ListIterator_ctor(ListIterator* this, va_list* args)
     if (!this || !args)
         raise("NULL value given");
     this->_list = va_arg(*args, List) ;
-    this->_idx = va_arg(*args, int);
+    this->m_index = va_arg(*args, int);
     this->_current = this->_list->_first;
 }
 
-bool ListIterator_eq(ListIterator* this, ListIterator* other)
+bool ListIterator_eq(ListIterator* this, const ListIterator* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    return (this->_idx == other->_idx);
+    return (this->m_index == other->m_index);
 }
 
-bool ListIterator_gt(ListIterator* this, ListIterator* other)
+bool ListIterator_gt(ListIterator* this, const ListIterator* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    return (this->_idx > other->_idx);
+    return (this->m_index > other->m_index);
 }
 
-bool ListIterator_lt(ListIterator* this, ListIterator* other)
+bool ListIterator_lt(ListIterator* this, const ListIterator* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    return (this->_idx < other->_idx);
+    return (this->m_index < other->m_index);
 }
 
 void ListIterator_incr(ListIterator* this)
@@ -35,14 +35,14 @@ void ListIterator_incr(ListIterator* this)
     if (!this)
         raise("NULL value given");
     this->_current = this->_current->_next;
-    this->_idx += 1;
+    this->m_index += 1;
 }
 
 Object* ListIterator_getval(ListIterator* this)
 {
     if (!this)
         raise("NULL value given");
-    if (this->_idx >= this->_list->_size)
+    if (this->m_index >= this->_list->_size)
         raise("Out of range");
     return (this->_current);
 }
@@ -64,30 +64,30 @@ void ListIterator_setval(ListIterator* this, ...)
     va_end(args);
 }
 
-static const ListIteratorDescr = {
+static const ListIterator _descr = {
     {
         {
             .__size__ = sizeof(ListIterator), 
             .__name__ = "ListIterator",
-            .__ctor__ = (ctor_t)&ListIterator_ctor,
+            .__ctor__ = (ctor)&ListIterator_ctor,
             .__dtor__ = NULL,
             .__str__ = NULL,
             .__add__ = NULL,
             .__sub__ = NULL,
             .__mul__ = NULL,
             .__div__ = NULL,
-            .__eq__ = (binary_comparator_t)&ListIterator_eq,
-            .__gt__ = (binary_comparator_t)&ListIterator_gt,
-            .__lt__ = (binary_comparator_t)&ListIterator_lt,
+            .__eq__ = (binary_comparator)&ListIterator_eq,
+            .__gt__ = (binary_comparator)&ListIterator_gt,
+            .__lt__ = (binary_comparator)&ListIterator_lt,
         },
         .__incr__ = (incr_t)&ListIterator_incr,
         .__getval__ = (getval_t)&ListIterator_getval,
         .__setval__ = (setval_t)&ListIterator_setval,
     },
     ._list = NULL,
-    ._idx = 0};
+    .m_index = 0};
 
-static const Class* ListIterator = (const Class*)&ListIteratorDescr;
+static const Class* ListIterator = (const Class*)&_descr;
 
 // ============== Nodes ==============
 
@@ -165,7 +165,7 @@ Object *Node_get_value(Node* this)
     return this->_value;
 }
 
-static const NodeDescr = {
+static const Node _descr = {
     {
         .__size__ = sizeof(Node), 
         .__name__ = "Node",
@@ -192,9 +192,30 @@ static const NodeDescr = {
     .__get_value__ = (node_get_value)&Node_get_value
 };
 
-static const Class* Node = (const Class*)&NodeDescr;
+static const Class* Node = (const Class*)&_descr;
 
 // ============== LIST ==============
+
+void List_ctor(List* this, va_list* args)
+{
+    if (!this || !args)
+        raise("NULL value given");
+}
+
+void List_dtor(List* this)
+{
+    Node* prev = NULL;
+    Node* next = NULL;
+
+    if (!this)
+        raise("NULL value given");
+    prev = this->_first;
+    while (prev) {
+            next = prev->_next;
+            delete(prev);
+            prev = next;
+    }
+}
 
 void list_push_front(List* this, ...)
 {
@@ -286,27 +307,6 @@ Node* List_get_at(List* this, uint32_t position)
         node = node->_next;
     }
     return (node);
-}
-
-void List_ctor(List* this, va_list* args)
-{
-    if (!this || !args)
-        raise("NULL value given");
-}
-
-void List_dtor(List* this)
-{
-    Node* prev = NULL;
-    Node* next = NULL;
-
-    if (!this)
-        raise("NULL value given");
-    prev = this->_first;
-    while (prev) {
-            next = prev->_next;
-            delete(prev);
-            prev = next;
-    }
 }
 
 size_t List_len(List* this)
@@ -434,7 +434,7 @@ char* List_str(List* this)
     return res;
 }
 
-static const ListDescr = {
+static const List _descr = {
     {
         {
             .__size__ = sizeof(List), 
@@ -466,4 +466,4 @@ static const ListDescr = {
     .__get_at__ = (list_get_value)&List_get_at
 };
 
-const Class* List = (const Class*)&ListDescr;
+const Class* List = (const Class*)&_descr;
