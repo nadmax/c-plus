@@ -7,7 +7,7 @@
 
 typedef struct Container_s Container;
 
-typedef Iterator* (*iter)(Container*);
+typedef IteratorClass* (*iter)(Container*);
 typedef size_t (*len)(Container*);
 typedef Object* (*getitem)(Container*, ...);
 typedef void (*setitem)(Container*, ...);

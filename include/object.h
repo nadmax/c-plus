@@ -11,23 +11,23 @@ typedef void Object;
 typedef void (*ctor)(Object*, va_list*);
 typedef void (*dtor)(Object*);
 typedef char* (*to_string)(Object*);
-typedef Object* (binary_op)(const Object*, const Object*);
-typedef bool (binary_compare_op)(const Object*, const Object*);
+typedef Object* (*binary_operator)(const Object*, const Object*);
+typedef bool (*binary_comparator)(const Object*, const Object*);
 
-typedef struct Class_s
+typedef struct
 {
     const size_t __size__;
     const char* __name__;
     ctor __ctor__;
     dtor __dtor__;
     to_string __str__;
-    binary_op __add__;
-    binary_op __sub__;
-    binary_op __mul__;
-    binary_op __div__;
-    binary_compare_op __eq__;
-    binary_compare_op __lt__;
-    binary_compare_op __gt__;
+    binary_operator __add__;
+    binary_operator __sub__;
+    binary_operator __mul__;
+    binary_operator __div__;
+    binary_comparator __eq__;
+    binary_comparator __lt__;
+    binary_comparator __gt__;
 } Class;
 
 #define str(obj)    (((Class *)obj)->__str__ != NULL ? ((Class *)obj)->__str__(obj) : strdup(((Class *)obj)->__name__))

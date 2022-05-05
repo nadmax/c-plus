@@ -4,95 +4,96 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include "container.h"
+#include "iterator.h"
 #include "raise.h"
-#include "list.h"
 #include "new.h"
 #include "int.h"
 
-typedef struct Node_s Node;
-typedef struct List_s List;
+typedef struct Node_s NodeClass;
+typedef struct List_s ListClass;
 
 extern const Class* List;
 
-typedef void (*set_link)(Node*, Node*);
-typedef void (*set_value)(Node*, Node*);
-typedef Node* (*get_link)(Node*);
-typedef Object* (*get_value)(Node*);
+typedef void (*set_link)(NodeClass*, NodeClass*);
+typedef void (*set_value)(NodeClass*, NodeClass*);
+typedef NodeClass* (*get_link)(NodeClass*);
+typedef Object* (*node_get_value)(NodeClass*);
 
-typedef void (*push_front)(List*, ...);
-typedef void (*push_back)(List*, ...);
-typedef void (*pop_front)(List*);
-typedef void (*pop_back)(List*);
-typedef Node* (*get_value)(List*, uint32_t);
+typedef void (*push_front)(ListClass*, ...);
+typedef void (*push_back)(ListClass*, ...);
+typedef void (*pop_front)(ListClass*);
+typedef void (*pop_back)(ListClass*);
+typedef NodeClass* (*list_get_value)(ListClass*, uint32_t);
 
 struct Node_s
 {
     Class class;
     Class* m_type;
     Object* m_value;
-    Node* m_next;
-    Node* m_prev;
+    NodeClass* m_next;
+    NodeClass* m_prev;
 
     set_link __set_prev__;
     set_link __set_next__;
     set_value __set_value__;
     get_link __get_prev__;
     get_link __get_next__;
-    get_value __get_value__;
+    node_get_value __get_value__;
 };
 
 struct List_s
 {
     Container base;
     size_t m_size;
-    Node* m_head;
-    Node* m_tail;
+    NodeClass* m_head;
+    NodeClass* m_tail;
 
     push_front __push_front__;
     push_back __push_back__;
     pop_front __pop_front__;
     pop_back __pop_back__;
-    get_value __get_at__;
+    list_get_value __get_at__;
 };
 
-typedef struct ListIterator_s
+typedef struct
 {
-    Iterator base;
-    List* m_list;
-    Node* m_current;
+    IteratorClass base;
+    ListClass* m_list;
+    NodeClass* m_current;
     size_t m_index;
-} ListIterator;
+} ListIteratorClass;
 
-void ListIterator_ctor(ListIterator*, va_list*);
-bool ListIterator_eq(ListIterator*, const ListIterator*);
-bool ListIterator_gt(ListIterator*, const ListIterator*);
-bool ListIterator_lt(ListIterator*, const ListIterator*);
-void ListIterator_incr(ListIterator*);
-Object* ListIterator_getval(ListIterator*);
-void ListIterator_setval(ListIterator*, ...);
+void ListIterator_ctor(ListIteratorClass*, va_list*);
+bool ListIterator_eq(ListIteratorClass*, const ListIteratorClass*);
+bool ListIterator_gt(ListIteratorClass*, const ListIteratorClass*);
+bool ListIterator_lt(ListIteratorClass*, const ListIteratorClass*);
+void ListIterator_incr(ListIteratorClass*);
+Object* ListIterator_getval(ListIteratorClass*);
+void ListIterator_setval(ListIteratorClass*, ...);
 
-void Node_ctor(Node*, va_list*);
-void Node_dtor(Node*);
-char* Node_str(Node*);
-void Node_set_prev(Node*, Node*);
-void Node_set_next(Node*, Node*);
-void Node_set_value(Node*, Class*, ...);
-Node* Node_get_prev(Node*);
-Node* Node_get_next(Node*);
-Object *Node_get_value(Node*);
+void Node_ctor(NodeClass*, va_list*);
+void Node_dtor(NodeClass*);
+char* Node_str(NodeClass*);
+void Node_set_prev(NodeClass*, NodeClass*);
+void Node_set_next(NodeClass*, NodeClass*);
+void Node_set_value(NodeClass*, Class*, ...);
+NodeClass* Node_get_prev(NodeClass*);
+NodeClass* Node_get_next(NodeClass*);
+Object *Node_get_value(NodeClass*);
 
-void List_ctor(List*, va_list*);
-void List_dtor(List*);
-void list_push_front(List*, ...);
-void list_push_back(List*, ...);
-void list_pop_front(List*);
-void list_pop_back(List*);
-Node* List_get_at(List*, uint32_t);
-size_t List_len(List*);
-Iterator* List_begin(List*);
-Iterator* List_end(List*);
-Object* List_getitem(List*, ...);
-void List_setitem(List*, ...);
-char* List_str(List*);
+void List_ctor(ListClass*, va_list*);
+void List_dtor(ListClass*);
+void list_push_front(ListClass*, ...);
+void list_push_back(ListClass*, ...);
+void list_pop_front(ListClass*);
+void list_pop_back(ListClass*);
+NodeClass* List_get_at(ListClass*, uint32_t);
+size_t List_len(ListClass*);
+ListIteratorClass* List_begin(ListClass*);
+ListIteratorClass* List_end(ListClass*);
+Object* List_getitem(ListClass*, ...);
+void List_setitem(ListClass*, ...);
+char* List_str(ListClass*);
 
 #endif
