@@ -1,27 +1,36 @@
 CC   =  gcc
 
-SRC  = 	src/main.c   \
-		src/int.c    \
-		src/list.c   \
-		src/new.c    \
-		src/point.c  \
-		src/vertex.c
+SRC  =  lib/int.c    \
+		lib/list.c   \
+		lib/new.c    \
+		lib/point.c  \
+		lib/vertex.c
 
 OBJ  =  $(SRC:.c=.o)
 
-TARGET = a.out
+AR = ar rc
 
 CFLAGS = -I./include/ -Wall -Wextra -Wpedantic
 
-all: $(OBJ)
-	$(CC) $(OBJ) $(CFLAGS) -o $(TARGET)
+LIB =  lib.a
+
+all: $(LIB)
+
+$(LIB): 
+	make -C . build
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build: $(OBJ)
+	$(AR) $(LIB) $(OBJ)
 
 clean:
 	rm -f $(OBJ)
 
 fclean: clean
-	rm -f $(TARGET)
+	rm -f $(LIB)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all build clean fclean re
