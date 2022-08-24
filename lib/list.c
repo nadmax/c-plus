@@ -13,7 +13,6 @@ bool ListIterator_eq(ListIteratorClass* this, const ListIteratorClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    
     return this->m_index == other->m_index;
 }
 

@@ -9,6 +9,7 @@
 #include "raise.h"
 #include "new.h"
 #include "int.h"
+#include "delete.h"
 
 typedef struct Node_s NodeClass;
 typedef struct List_s ListClass;
