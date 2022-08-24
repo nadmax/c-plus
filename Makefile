@@ -3,6 +3,7 @@ CC   =  gcc
 SRC  =  lib/int.c    \
 		lib/list.c   \
 		lib/new.c    \
+		lib/delete.c \
 		lib/point.c  \
 		lib/vertex.c
 
