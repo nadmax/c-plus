@@ -6,6 +6,5 @@
 
 Object* new(const Class* class, ...);
 Object* va_new(const Class* class, va_list* args);
-void delete(Object* obj);
 
 #endif
