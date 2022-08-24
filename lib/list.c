@@ -89,7 +89,8 @@ static const ListIteratorClass _ListIteratorDescr = {
         .__setval__ = (setval_t)&ListIterator_setval,
     },
     .m_list = NULL,
-    .m_index = 0};
+    .m_index = 0
+};
 
 static const Class* ListIterator = (const Class*)&  _ListIteratorDescr;
 
