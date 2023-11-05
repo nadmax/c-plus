@@ -18,7 +18,7 @@ struct Point_s
 
 void Point_ctor(PointClass*, va_list*);
 void Point_dtor(PointClass*);
-char *Point_str(PointClass*);
+char* Point_str(PointClass*);
 PointClass* Point_add(const PointClass*, const PointClass*);
 PointClass* Point_sub(const PointClass*, const PointClass*);
 PointClass* Point_mul(const PointClass*, const PointClass*);
