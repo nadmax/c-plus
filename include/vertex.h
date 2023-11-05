@@ -19,7 +19,7 @@ struct Vertex_s
 
 void Vertex_ctor(VertexClass*, va_list*);
 void Vertex_dtor(VertexClass*);
-char *Vertex_str(VertexClass*);
+char* Vertex_str(VertexClass*);
 VertexClass* Vertex_add(const VertexClass*, const VertexClass*);
 VertexClass* Vertex_sub(const VertexClass*, const VertexClass*);
 VertexClass* Vertex_mul(const VertexClass*, const VertexClass*);

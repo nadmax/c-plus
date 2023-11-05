@@ -20,7 +20,6 @@ typedef void (*set_link)(NodeClass*, NodeClass*);
 typedef void (*set_value)(NodeClass*, NodeClass*);
 typedef NodeClass* (*get_link)(NodeClass*);
 typedef Object* (*node_get_value)(NodeClass*);
-
 typedef void (*push_front)(ListClass*, ...);
 typedef void (*push_back)(ListClass*, ...);
 typedef void (*pop_front)(ListClass*);
@@ -34,7 +33,6 @@ struct Node_s
     Object* m_value;
     NodeClass* m_next;
     NodeClass* m_prev;
-
     set_link __set_prev__;
     set_link __set_next__;
     set_value __set_value__;
@@ -49,7 +47,6 @@ struct List_s
     size_t m_size;
     NodeClass* m_head;
     NodeClass* m_tail;
-
     push_front __push_front__;
     push_back __push_back__;
     pop_front __pop_front__;

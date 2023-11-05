@@ -4,6 +4,7 @@ void ListIterator_ctor(ListIteratorClass* this, va_list* args)
 {
     if (!this || !args)
         raise("NULL value given");
+
     this->m_list = va_arg(*args, ListClass*);
     this->m_index = va_arg(*args, int);
     this->m_current = this->m_list->m_head;
@@ -13,6 +14,7 @@ bool ListIterator_eq(ListIteratorClass* this, const ListIteratorClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
+
     return this->m_index == other->m_index;
 }
 
@@ -20,7 +22,7 @@ bool ListIterator_gt(ListIteratorClass* this, const ListIteratorClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    
+
     return this->m_index > other->m_index;
 }
 
@@ -28,7 +30,7 @@ bool ListIterator_lt(ListIteratorClass* this, const ListIteratorClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
-    
+
     return this->m_index < other->m_index;
 }
 
@@ -36,6 +38,7 @@ void ListIterator_incr(ListIteratorClass* this)
 {
     if (!this)
         raise("NULL value given");
+
     this->m_current = this->m_current->m_next;
     this->m_index += 1;
 }
@@ -58,6 +61,7 @@ void ListIterator_setval(ListIteratorClass* this, ...)
 
     if (!this)
         raise("NULL value given");
+
     va_start(args, this);
     node = this->m_current;
     node->m_type = (Class *) va_arg(args, size_t);
@@ -99,9 +103,12 @@ void Node_ctor(NodeClass* this, va_list* args)
 {
     if (!this || !args)
         raise("NULL value given");
+
     this->m_type = va_arg(*args, Class*);
+
     if (!this->m_type)
         raise("NULL value given");
+
     this->m_value = va_new(this->m_type, args);
 }
 
@@ -109,6 +116,7 @@ void Node_dtor(NodeClass* this)
 {
     if (!this)
         raise("NULL value given");
+
     delete(this->m_value);
 }
 
@@ -116,7 +124,7 @@ char* Node_str(NodeClass* this)
 {
     if (!this)
         raise("Null value given");
-    
+
     return str(this->m_value);
 }
 
@@ -124,6 +132,7 @@ void Node_set_prev(NodeClass* this, NodeClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
+
     this->m_prev = other;
 }
 
@@ -131,6 +140,7 @@ void Node_set_next(NodeClass* this, NodeClass* other)
 {
     if (!this || !other)
         raise("NULL value given");
+
     this->m_next = other;
 }
 
@@ -141,6 +151,7 @@ void Node_set_value(NodeClass* this, Class *type, ...)
 
     if (!this || !type)
         raise("NULL value given");
+
     va_start(va, type);
     this->m_type = type;
     obj = va_new(this->m_type, &va);
@@ -153,7 +164,7 @@ NodeClass* Node_get_prev(NodeClass* this)
 {
     if (!this)
         raise("NULL value given");
-    
+
     return this->m_prev;
 }
 
@@ -161,7 +172,7 @@ NodeClass* Node_get_next(NodeClass* this)
 {
     if (!this)
         raise("NULL value given");
-    
+
     return this->m_next;
 }
 
@@ -169,7 +180,7 @@ Object *Node_get_value(NodeClass* this)
 {
     if (!this)
         raise("NULL value given");
-    
+
     return this->m_value;
 }
 
@@ -217,7 +228,9 @@ void List_dtor(ListClass* this)
 
     if (!this)
         raise("NULL value given");
+
     prev = this->m_head;
+
     while (prev) {
         next = prev->m_next;
         delete(prev);
@@ -231,19 +244,23 @@ void list_push_front(ListClass* this, ...)
     va_list va;
 
     va_start(va, this);
+
     if (!this)
         raise("Out of Memory");
+
     new_node = va_new(Node, &va);
     va_end(va);
     new_node->m_next = this->m_head;
     this->m_head = new_node;
+
     if (!this->m_size)
         this->m_tail = new_node;
     else {
         this->m_head->m_prev = NULL;
         this->m_head->m_next->m_prev = this->m_head;
     }
-    (this->m_size)++;
+
+    this->m_size++;
 }
 
 void list_push_back(ListClass* this, ...)
@@ -252,19 +269,23 @@ void list_push_back(ListClass* this, ...)
     va_list va;
 
     va_start(va, this);
+
     if (!this)
         raise("Out of Memory");
+
     new_node = va_new(Node, &va);
     va_end(va);
     new_node->m_prev = this->m_tail;
     this->m_tail = new_node;
+
     if (!this->m_size)
         this->m_head = new_node;
     else {
         this->m_tail->m_next = NULL;
         this->m_tail->m_prev->m_next = this->m_tail;
     }
-    (this->m_size)++;
+
+    this->m_size++;
 }
 
 void list_pop_front(ListClass* this)
@@ -274,11 +295,13 @@ void list_pop_front(ListClass* this)
     if (!this)
         raise("Out of Memory");
     old_node = this->m_head;
-    if (this->m_head == this->m_tail) {
+
+    if (this->m_head == this->m_tail)
         this->m_tail = NULL;
-    }
+
     this->m_head = old_node->m_next;
     delete(old_node);
+
     if (this->m_head)
         this->m_head->m_prev = NULL;
     this->m_size--;
@@ -290,15 +313,18 @@ void list_pop_back(ListClass* this)
 
     if (!this)
         raise("Out of Memory");
+
     old_node = this->m_tail;
-    if (this->m_head == this->m_tail) {
+
+    if (this->m_head == this->m_tail)
         this->m_head = NULL;
-    }
+
     this->m_tail = old_node->m_prev;
     delete(old_node);
-    if (this->m_tail) {
+
+    if (this->m_tail)
         this->m_tail->m_next = NULL;
-    }
+
     this->m_size--;
 }
 
@@ -308,10 +334,13 @@ NodeClass* List_get_at(ListClass* this, uint32_t position)
 
     if (!this)
         raise("Out of Memory");
+
     node = this->m_head;
+
     for (uint32_t i = 0; i < position; i++) {
         if (!node)
             raise("Out of bounds");
+
         node = node->m_next;
     }
 
@@ -322,7 +351,7 @@ size_t List_len(ListClass* this)
 {
     if (!this)
         raise("NULL value given");
-    
+
     return this->m_size;
 }
 
@@ -330,6 +359,7 @@ ListIteratorClass* List_begin(ListClass* this)
 {
     if (!this)
         raise("NULL value given");
+
     return new(ListIterator, this, 0);
 }
 
@@ -349,12 +379,16 @@ Object* List_getitem(ListClass* this, ...)
 
     if (!this)
         raise("NULL value given");
+
     va_start(va, this);
     index = va_arg(va, size_t);
+
     if (index < this->m_size) {
         node = List_get_at(this, index);
+
         return node->m_value;
     }
+
     va_end(va);
 
     return NULL;
@@ -369,10 +403,13 @@ void List_setitem(ListClass* this, ...)
 
     if (!this)
         raise("NULL value given");
+
     va_start(va, this);
     pos = va_arg(va, size_t);
+
     if (pos >= this->m_size)
         raise("Index out of bounds");
+
     node = List_get_at(this, pos);
     obj = va_new(node->m_type, &va);
     delete(node->m_value);
@@ -384,9 +421,9 @@ char* List_str(ListClass* this)
 {
     int len = 0;
     NodeClass* node =  NULL;
-    char *str = NULL;
-    Class *obj_class = NULL;
-    char *res = NULL;
+    char* str = NULL;
+    Class* obj_class = NULL;
+    char* res = NULL;
 
     if (!this)
         raise("NULL value given");
@@ -394,20 +431,26 @@ char* List_str(ListClass* this)
     // calculate str size
     len += snprintf(NULL, 0, "<ListClass ()>");
     node = this->m_head;
+
     while (node) {
         if (!node->m_value)
             continue;
+
         obj_class = (Class *)node->m_value;
+
         if (obj_class->__str__) {
             str = obj_class->__str__(obj_class);
+
             if (!str)
                 raise("Out of memory");
+
             len += strlen(str) + 2;
             free(str);
         } else
             len += snprintf(NULL, 0, "<%s>, ", obj_class->__name__);
         if (!node->m_next)
-                len -= 2;
+            len -= 2;
+
         node = node->m_next;
     }
 
@@ -419,16 +462,21 @@ char* List_str(ListClass* this)
     // get string
     len = sprintf(res, "<ListClass (");
     node = this->m_head;
+
     while (node) {
         if (!node->m_value)
             continue;
-        obj_class = (Class *)node->m_value;
+
+        obj_class = (Class*)node->m_value;
+
         if (obj_class->__str__) {
             str = obj_class->__str__(obj_class);
+
             if (node->m_next)
                 len += sprintf(&(res[len]), "%s, ", str);
             else
                 len += sprintf(&(res[len]), "%s", str);
+
             free(str);
         } else {
             if (node->m_next)
@@ -436,11 +484,13 @@ char* List_str(ListClass* this)
             else
                 len += sprintf(&(res[len]), "<%s>", obj_class->__name__);
         }
+
         node = node->m_next;
     }
+
     len += sprintf(&(res[len]), ")>");
     res[len] = '\0';
-    
+
     return res;
 }
 

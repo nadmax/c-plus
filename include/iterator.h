@@ -5,7 +5,6 @@
 #include "raise.h"
 
 typedef struct Iterator_s IteratorClass;
-
 typedef void (*incr_t)(IteratorClass*);
 typedef Object* (*getval_t)(IteratorClass* this);
 typedef void (*setval_t)(IteratorClass*, ...);
